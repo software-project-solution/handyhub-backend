@@ -23,28 +23,31 @@ public class VendorServiceImpl implements VendorService {
     @Override
     public ResponseEntity<Object> insertVendorDetails(VendorDto vendorDto) {
         try {
-            Optional<Vendor> existingVendor = Optional.ofNullable(vendorRepository.findVendorByFirstNameAndMobile(vendorDto.getFirstName(), vendorDto.getMobile()));
-
-            Vendor vendor;
-
-            if (existingVendor.isPresent()) {
-                vendor = existingVendor.get();
-                log.info("Updating existing vendor record with name: {} and mobile: {}", vendor.getFirstName(), vendorDto.getMobile());
-            } else {
-              vendor = new Vendor();
-                log.info("Creating new vendor record with name: {} and mobile: {}", vendor.getFirstName(), vendorDto.getMobile());
-            }
-
+            Vendor vendor = new Vendor();
             vendor.setFirstName(vendorDto.getFirstName());
             vendor.setLastName(vendorDto.getLastName());
             vendor.setAddress(vendorDto.getAddress());
             vendor.setMobile(vendorDto.getMobile());
             vendorRepository.save(vendor);
 
-            return ResponseHandler.generateResponse(HttpStatus.OK, "Successfully saved the vendor data");
+            return ResponseHandler.generateResponse(HttpStatus.OK, "Successfully created the vendor data");
         } catch (Exception e) {
-            log.error("Exception message: {}", e.getMessage(), e);
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            log.error("Ex. message: {}", e.getMessage());
+            return new ResponseEntity(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @Override
+    public ResponseEntity<Object> getVendorDetails(Integer id) {
+        Optional<Vendor> optionalVendor = vendorRepository.findById(id);
+
+        if (optionalVendor.isPresent()) {
+            Vendor vendor = optionalVendor.get();
+            log.info("Vendor found: {}", vendor);
+            return ResponseEntity.ok(vendor);
+        } else {
+            log.warn("Vendor with ID {} not found", id);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Vendor not found with ID: " + id);
         }
     }
 

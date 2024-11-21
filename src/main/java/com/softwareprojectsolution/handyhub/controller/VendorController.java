@@ -19,10 +19,17 @@ public class VendorController {
     @Autowired
     private VendorService vendorService;
 
-    @PostMapping(value = "/insertVendor")
-    private ResponseEntity<Object> addVendor(@Valid @RequestBody VendorDto vendorDto) {
+    @PostMapping(value = "/insertVendorData")
+    private ResponseEntity<Object> addVendorData(@Valid @RequestBody VendorDto vendorDto) {
 
         ResponseEntity<Object> res = vendorService.insertVendorDetails(vendorDto);
+        return ResponseHandler.generateResponse((HttpStatus) res.getStatusCode(), res.getBody());
+    }
+
+    @GetMapping(value = "/getVendorData")
+    private ResponseEntity<Object> getVendorData(@Valid @RequestParam("id") Integer id) {
+
+        ResponseEntity<Object> res = vendorService.getVendorDetails(id);
         return ResponseHandler.generateResponse((HttpStatus) res.getStatusCode(), res.getBody());
     }
 }

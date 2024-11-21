@@ -15,7 +15,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Vendor {
-    @TableGenerator(name = "tbl", initialValue = 100)
+    @TableGenerator(name = "tbl", initialValue = 100, allocationSize = 1)
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO, generator = "tbl")
     private Integer id;
